@@ -1,9 +1,9 @@
 Package: ml.andrewhyatt.typetab
-Name: typetab
+Name: TypeTab
 Depends: mobilesubstrate
 Version: 0.0.1
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
+Description: Type into the Safari address bar immediatly after creating a new tab
 Maintainer: Andrew Hyatt <ahyattdev@icloud.com>
 Author: Andrew Hyatt <ahyattdev@icloud.com>
 Section: Tweaks

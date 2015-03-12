@@ -8,7 +8,7 @@
 
 - (void)_addNewActiveTiltedTabViewTab {
     %orig;
-    BrowserController *bc = MSHookIvar<BrowserController *>([UIApplication sharedApplication], "_browserController");
+    BrowserController *bc = MSHookIvar<BrowserController *>([UIApplication sharedApplication], "_controller");
     [bc navigationBarURLWasTapped:0];
 }
 
