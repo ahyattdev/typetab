@@ -1,6 +1,7 @@
 @interface BrowserController
 
 - (void)navigationBarURLWasTapped:(id)fp8;
+- (BOOL)isShowingFavorites;
 
 @end
 
@@ -10,13 +11,21 @@
 
 @end
 
+@interface TabOverview
+
+- (void)_addTab;
+
+@end
+
 %hook Application
 
 %new
 - (void)typeTab {
     // Adds a method for typing into the search field to Safari's app delegate
     BrowserController *bc = MSHookIvar<BrowserController *>(self, "_controller");
-    [bc navigationBarURLWasTapped:0];
+    if ([bc isShowingFavorites]) {
+        [bc navigationBarURLWasTapped:0];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -56,6 +65,15 @@
 
 - (void)_newTabKeyPressed {
     // Called when Command+T is pressed on a hardware keyboard
+    %orig;
+    [(Application *)[UIApplication sharedApplication] typeTab];
+}
+
+%end
+
+%hook TabOverview
+
+- (void)_addTab {
     %orig;
     [(Application *)[UIApplication sharedApplication] typeTab];
 }
