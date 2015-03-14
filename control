@@ -1,7 +1,7 @@
 Package: ml.andrewhyatt.typetab
 Name: TypeTab
 Depends: mobilesubstrate
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm
 Description: Type into the Safari address bar immediatly after creating a new tab
 Maintainer: Andrew Hyatt <ahyattdev@icloud.com>

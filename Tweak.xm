@@ -19,6 +19,17 @@
     [bc navigationBarURLWasTapped:0];
 }
 
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    %orig;
+    [(Application *)[UIApplication sharedApplication] typeTab];
+    return YES;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    %orig;
+    [(Application *)[UIApplication sharedApplication] typeTab];
+}
+
 %end
 
 %hook TabController
