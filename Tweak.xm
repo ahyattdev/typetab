@@ -1,7 +1,16 @@
+@class TabDocument, TiltedTabView, BrowserController, BrowserControllerWK2, Application, TabController;
+
 @interface BrowserController
 
 - (void)navigationBarURLWasTapped:(id)fp8;
 - (BOOL)isShowingFavorites;
+- (BOOL)privateBrowsingEnabled;
+
+@end
+
+@interface BrowserControllerWK2
+
+- (void)addTabFromButtonBar;
 
 @end
 
@@ -11,9 +20,17 @@
 
 @end
 
-@interface TabOverview
+@interface TabController
 
-- (void)_addTab;
+- (NSArray *)_currentTabs;
+- (TiltedTabView *)tiltedTabView;
+- (void)_addNewActiveTiltedTabViewTab;
+
+@end
+
+@interface TiltedTabView
+
+- (NSArray *)items;
 
 @end
 
@@ -36,17 +53,35 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     %orig;
-    [(Application *)[UIApplication sharedApplication] typeTab];
+    BrowserController *bc = MSHookIvar<BrowserController *>(self, "_controller");
+    if (!bc.privateBrowsingEnabled) {
+        [(Application *)[UIApplication sharedApplication] typeTab];
+    }
 }
 
 %end
 
 %hook TabController
 
+- (void)setActiveTabDocument:(TabDocument *)blankTab animated:(BOOL)animated {
+    %orig;
+    // Main hook for normal browsing
+    BrowserController *bc = MSHookIvar<BrowserController *>(self, "_browserController");
+    if (!bc.privateBrowsingEnabled) {
+        [(Application *)[UIApplication sharedApplication] typeTab];
+    }
+}
+
+// Done as a workaround to a bug with the private browsing TiltedTabView
+
 - (void)_addNewActiveTiltedTabViewTab {
+    Application *appDel = (Application *)[UIApplication sharedApplication];
+    BrowserController *bc = MSHookIvar<BrowserController *>(appDel, "_controller");
     // Called when you press the add tab UIBarButtonItem on iPhone
     %orig;
-    [(Application *)[UIApplication sharedApplication] typeTab];
+    if (bc.privateBrowsingEnabled) {
+        [(Application *)[UIApplication sharedApplication] typeTab];
+    }
 }
 
 %end
@@ -54,19 +89,13 @@
 %hook BrowserControllerWK2
 
 - (void)addTabFromButtonBar {
+    Application *appDel = (Application *)[UIApplication sharedApplication];
+    BrowserController *bc = MSHookIvar<BrowserController *>(appDel, "_controller");
     // Called when you press the add tab UIBarButtonItem on iPad
     %orig;
-    [(Application *)[UIApplication sharedApplication] typeTab];
-}
-
-%end
-
-%hook BrowserRootViewController
-
-- (void)_newTabKeyPressed {
-    // Called when Command+T is pressed on a hardware keyboard
-    %orig;
-    [(Application *)[UIApplication sharedApplication] typeTab];
+    if (bc.privateBrowsingEnabled) {
+        [(Application *)[UIApplication sharedApplication] typeTab];
+    }
 }
 
 %end
@@ -75,7 +104,12 @@
 
 - (void)_addTab {
     %orig;
-    [(Application *)[UIApplication sharedApplication] typeTab];
+    // Also iPad
+    Application *appDel = (Application *)[UIApplication sharedApplication];
+    BrowserController *bc = MSHookIvar<BrowserController *>(appDel, "_controller");
+    if (bc.privateBrowsingEnabled) {
+        [(Application *)[UIApplication sharedApplication] typeTab];
+    }
 }
 
 %end
