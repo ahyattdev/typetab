@@ -3,7 +3,7 @@ Name: TypeTab
 Depends: mobilesubstrate
 Version: 1.3
 Architecture: iphoneos-arm
-Description: Type into the Safari address bar immediatly after creating a new tab
+Description: Faster address entry for Safari tabs
 Maintainer: Andrew Hyatt <ahyattdev@icloud.com>
 Author: Andrew Hyatt <ahyattdev@icloud.com>
 Sponsor: thebigboss.org <http://thebigboss.org>
