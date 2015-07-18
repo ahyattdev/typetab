@@ -3,8 +3,8 @@
 @interface BrowserController
 
 - (void)navigationBarURLWasTapped:(id)fp8;
-- (BOOL)isShowingFavorites;
 - (BOOL)privateBrowsingEnabled;
+- (TabController *)tabController;
 
 @end
 
@@ -25,6 +25,7 @@
 - (NSArray *)_currentTabs;
 - (TiltedTabView *)tiltedTabView;
 - (void)_addNewActiveTiltedTabViewTab;
+- (TabDocument *)activeTabDocument;
 
 @end
 
@@ -34,13 +35,20 @@
 
 @end
 
+@interface TabDocument
+
+- (BOOL)isBlankDocument;
+
+@end
+
 %hook Application
 
 %new
 - (void)typeTab {
     // Adds a method for typing into the search field to Safari's app delegate
     BrowserController *bc = MSHookIvar<BrowserController *>(self, "_controller");
-    if ([bc isShowingFavorites]) {
+    
+    if (bc.tabController.activeTabDocument.isBlankDocument) {
         [bc navigationBarURLWasTapped:0];
     }
 }
