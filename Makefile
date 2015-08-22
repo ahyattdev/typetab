@@ -1,14 +1,17 @@
-export ARCHS = armv7 armv7s arm64
-export SDKVERSION = 8.4
-export TARGET = iphone:clang:8.4:8.0
-export TARGET_IPHONEOS_DEPLOYMENT_VERSION = 8.0
-
-export TWEAK_NAME = TypeTab
-export TypeTab_FILES = Tweak.xm
-export TypeTab_FRAMEWORKS = Foundation UIKit CoreGraphics
-export PACKAGE_VERSION = $(THEOS_PACKAGE_BASE_VERSION)
+ARCHS = armv7 armv7s arm64
+TARGET = iphone:clang:latest:8.0
+PACKAGE_VERSION = $(THEOS_PACKAGE_BASE_VERSION)
+DEBUG = 0
+GO_EASY_ON_ME = 1
+ADDITIONAL_CFLAGS = -fobjc-arc
 
 include theos/makefiles/common.mk
+
+TWEAK_NAME = TypeTab
+TypeTab_FILES = Tweak.xm
+TypeTab_FRAMEWORKS = Foundation UIKit CoreGraphics
+TypeTab_LIBRARIES = substrate
+
 include $(THEOS_MAKE_PATH)/tweak.mk
 
 after-install::
