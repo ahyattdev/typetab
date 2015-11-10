@@ -1,7 +1,7 @@
 Package: ml.andrewhyatt.typetab
 Name: TypeTab
-Depends: mobilesubstrate
-Version: 1.4-beta1
+Depends: mobilesubstrate (>= 0.9.6101), firmware (>= 8.0)
+Version: 2.0
 Architecture: iphoneos-arm
 Description: Faster address entry for Safari tabs
 Maintainer: Andrew Hyatt <ahyattdev@icloud.com>
