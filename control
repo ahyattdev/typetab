@@ -6,6 +6,5 @@ Architecture: iphoneos-arm
 Description: Faster address entry for Safari tabs
 Maintainer: Andrew Hyatt <ahyattdev@icloud.com>
 Author: Andrew Hyatt <ahyattdev@icloud.com>
-Sponsor: thebigboss.org <http://thebigboss.org>
 Section: Tweaks
 dev: andrewhyatt
