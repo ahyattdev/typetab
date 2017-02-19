@@ -6,7 +6,7 @@ THEOS_BUILD_DIR = debs
 include theos/makefiles/common.mk
 
 TWEAK_NAME = TypeTab
-TypeTab_FILES = Tweak.xm
+TypeTab_FILES = 8.xm 9.xm 10.xm
 TypeTab_FRAMEWORKS = Foundation UIKit CoreGraphics
 TypeTab_LIBRARIES = substrate
 TypeTab_LDFLAGS += -Wl,-segalign,4000
