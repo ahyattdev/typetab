@@ -90,8 +90,7 @@
 %end
 
 %ctor {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0 &&
-        [[[UIDevice currentDevice] systemVersion] floatValue] < 11.0) {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0) {
             %init(10);
         }
 }
