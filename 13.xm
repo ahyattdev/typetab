@@ -130,17 +130,6 @@ void typeTabAssumeBlank13()
 
 %end
 
-%hook TiltedTabView
-
-- (void)tabSelectionRecognized:(id)arg0
-{
-	%orig;
-	[NSException raise:@"foo" format:@"urmom"];
-	typeTab13();
-}
-
-%end
-
 %hook BrowserController
 
 - (void)tabController:(TabController *)tc didSwitchFromTabDocument:(TabDocument *)oldTab toTabDocument:(TabDocument *)newTab
@@ -190,6 +179,22 @@ void typeTabAssumeBlank13()
 %hook TiltedTabView
 
 - (void)activateItem:(id)arg0
+{
+	%orig;
+	typeTab13();
+}
+
+%end
+
+%hook TabOverview
+
+- (void)activateItem:(id)arg0
+{
+	%orig;
+	typeTab13();
+}
+
+- (void)_activateItemToActivate
 {
 	%orig;
 	typeTab13();
