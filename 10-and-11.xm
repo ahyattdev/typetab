@@ -40,7 +40,7 @@
 
 #define TYPETAB() if ([[[BC tabController] activeTabDocument] isBlankDocument] && ![BC isShowingTabView]) [BC navigationBarURLWasTapped:nil]
 
-%group 10
+%group 10and11
 
 %hook Application
 
@@ -90,7 +90,7 @@
 %end
 
 %ctor {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0) {
-            %init(10);
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0 && [[[UIDevice currentDevice] systemVersion] floatValue] < 12.0) {
+            %init(10and11);
         }
 }
