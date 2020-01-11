@@ -1,4 +1,9 @@
 @class BrowserController, TabController, TabDocument, Application;
+@class TabOverview, TiltedTabView;
+
+@class UIView;
+
+@protocol TabCollectionView;
 
 @interface BrowserController
 
@@ -20,12 +25,21 @@
 
 @end
 
-@interface TabController
+@interface TabController: NSObject
 
 // Called when the + button in the TiltedTabView on iPhone is pressed
 - (void)_addNewActiveTiltedTabViewTab;
 // Returns the currently displayed TabDocument
 - (TabDocument *)activeTabDocument;
+
+// nil when tab collection not presented
+@property (retain) UIView<TabCollectionView> *tabCollectionView;
+
+// iPhone portrait
+@property (retain) TiltedTabView *tiltedTabView;
+
+// iPhone landscape or iPad
+@property (retain) TabOverview *tabOverview;
 
 @end
 
@@ -35,7 +49,33 @@
 
 @end
 
+// iPhone tab view in portrait
+@interface TiltedTabView: UIView
+
+// 2: showing
+// 1: unknown
+// 0: not showing
+@property NSUInteger presentationState;
+
+@end
+
+// iPhone tab view in landscape, maybe iPad too?
+@interface TabOverview
+
+@end
+
 %group 12
+
+bool tabViewShowing()
+{
+	BrowserController *bc = [(Application *)[UIApplication sharedApplication] _focusedBrowserController];
+	TabController *tc = [bc tabController];
+	if (tc == nil)
+	{
+		return NO;
+	}
+	return [tc tabCollectionView] != nil;
+}
 
 void typeTab()
 {
@@ -55,14 +95,20 @@ void typeTab()
 // Show keyboard on launch if the current tab is blank
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   BOOL orig = %orig;
-  typeTab();
+  if (!tabViewShowing())
+  {
+  	typeTab();
+  }
   return orig;
 }
 
 // Show keyboard on resume if the current tab is blank
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   %orig;
-  typeTab();
+  if (!tabViewShowing())
+  {
+	typeTab();
+  }
 }
 
 // 3D Touch shortcut support
