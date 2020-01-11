@@ -43,9 +43,9 @@
 
 @end
 
-@interface Application
+@interface Application: UIApplication
 
-- (BrowserController *)_focusedBrowserController;
+- (BrowserController *)primaryBrowserController;
 
 @end
 
@@ -66,28 +66,33 @@
 
 %group 13
 
-bool tabViewShowing()
+bool tabViewShowing13()
 {
-	BrowserController *bc = [(Application *)[UIApplication sharedApplication] _focusedBrowserController];
+	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
+	if (bc == nil)
+	{
+		return YES;
+	}
 	TabController *tc = [bc tabController];
 	if (tc == nil)
 	{
-		return NO;
+		return YES;
 	}
 	return [tc tabCollectionView] != nil;
 }
 
-void typeTab()
+void typeTab13()
 {
-	BrowserController *bc = [(Application *)[UIApplication sharedApplication] _focusedBrowserController];
+	/*
+	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
 	TabController *tc = [bc tabController];
 	TabDocument *activeTabDocument = [tc activeTabDocument];
-	NSLog(@"TypeTab called");
 	if (tc != nil && [activeTabDocument isBlankDocument])
 	{
 		NSLog(@"Tapping bar!");
 		[bc navigationBarURLWasTapped:nil];
 	}
+	*/
 
 }
 %hook Application
@@ -95,9 +100,9 @@ void typeTab()
 // Show keyboard on launch if the current tab is blank
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   BOOL orig = %orig;
-  if (!tabViewShowing())
+  if (!tabViewShowing13())
   {
-  	typeTab();
+  	typeTab13();
   }
   return orig;
 }
@@ -105,9 +110,9 @@ void typeTab()
 // Show keyboard on resume if the current tab is blank
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   %orig;
-  if (!tabViewShowing())
+  if (!tabViewShowing13())
   {
-	typeTab();
+	typeTab13();
   }
 }
 
@@ -115,7 +120,7 @@ void typeTab()
 - (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
   %orig;
   if ([shortcutItem.type isEqualToString:@"com.apple.mobilesafari.shortcut.openNewTab"] || [shortcutItem.type isEqualToString:@"com.apple.mobilesafari.shortcut.openNewPrivateTab"]) {
-    typeTab();
+    typeTab13();
   }
 }
 
@@ -126,7 +131,7 @@ void typeTab()
 
 - (void)addTabFromButtonBar {
   %orig;
-  typeTab();
+  typeTab13();
 }
 
 %end
@@ -136,7 +141,7 @@ void typeTab()
 
 - (void)_newTabFromTabViewButton {
   %orig;
-  typeTab();
+  typeTab13();
 }
 
 %end
