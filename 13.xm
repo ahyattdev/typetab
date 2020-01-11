@@ -64,7 +64,7 @@
 
 @end
 
-%group 12
+%group 13
 
 bool tabViewShowing()
 {
@@ -144,7 +144,7 @@ void typeTab()
 %end
 
 %ctor {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 12.0 && [[[UIDevice currentDevice] systemVersion] floatValue] < 13.0) {
-            %init(12);
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 13.0) {
+            %init(13);
         }
 }
