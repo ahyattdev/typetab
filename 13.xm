@@ -64,6 +64,11 @@
 
 @end
 
+@interface BrowserRootViewController: UIViewController
+@end
+@interface BookmarkFavoritesViewController: UIViewController
+@end
+
 %group 13
 
 bool tabViewShowing13()
@@ -83,7 +88,6 @@ bool tabViewShowing13()
 
 void typeTab13()
 {
-	/*
 	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
 	TabController *tc = [bc tabController];
 	TabDocument *activeTabDocument = [tc activeTabDocument];
@@ -92,56 +96,103 @@ void typeTab13()
 		NSLog(@"Tapping bar!");
 		[bc navigationBarURLWasTapped:nil];
 	}
-	*/
-
-}
-%hook Application
-
-// Show keyboard on launch if the current tab is blank
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  BOOL orig = %orig;
-  if (!tabViewShowing13())
-  {
-  	typeTab13();
-  }
-  return orig;
 }
 
-// Show keyboard on resume if the current tab is blank
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-  %orig;
-  if (!tabViewShowing13())
-  {
-	typeTab13();
-  }
+void typeTabAssumeBlank13()
+{
+	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
+	[bc navigationBarURLWasTapped:nil];
 }
 
-// 3D Touch shortcut support
-- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
-  %orig;
-  if ([shortcutItem.type isEqualToString:@"com.apple.mobilesafari.shortcut.openNewTab"] || [shortcutItem.type isEqualToString:@"com.apple.mobilesafari.shortcut.openNewPrivateTab"]) {
-    typeTab13();
-  }
+%hook BrowserRootViewController
+
+- (void)viewDidAppear:(BOOL)animated
+{
+	%orig;
+	if (!tabViewShowing13())
+	{
+		typeTab13();
+	}
 }
 
 %end
 
-// Called on iPad
+%hook BookmarkFavoritesViewController
+
+- (void)viewDidAppear:(BOOL)animated
+{
+	%orig;
+	if (!tabViewShowing13())
+	{
+		typeTab13();
+	}
+}
+
+%end
+
+%hook TiltedTabView
+
+- (void)tabSelectionRecognized:(id)arg0
+{
+	%orig;
+	[NSException raise:@"foo" format:@"urmom"];
+	typeTab13();
+}
+
+%end
+
 %hook BrowserController
 
-- (void)addTabFromButtonBar {
-  %orig;
-  typeTab13();
+- (void)tabController:(TabController *)tc didSwitchFromTabDocument:(TabDocument *)oldTab toTabDocument:(TabDocument *)newTab
+{
+	%orig;
+	if ([newTab isBlankDocument])
+	{
+		typeTabAssumeBlank13();
+	}
 }
+
+- (void)tabDocumentCommitPreviewedDocument:(TabDocument *)tabDoc
+{
+	%orig;
+	if ([tabDoc isBlankDocument])
+	{
+		typeTabAssumeBlank13();
+	}
+}
+	
+// TODO: this class handles command+n
 
 %end
 
 // Called on iPhone
 %hook TabController
 
-- (void)_newTabFromTabViewButton {
+- (void)_newTabFromTabViewButton
+{
   %orig;
-  typeTab13();
+  typeTabAssumeBlank13();
+}
+
+- (void)_addNewActiveTabOverviewTab
+{
+  %orig;
+  typeTabAssumeBlank13();
+}
+
+- (void)_addNewActiveTiltedTabViewTab
+{
+  %orig;
+  typeTabAssumeBlank13();
+}
+%end
+
+%hook TiltedTabView
+
+- (void)activateItem:(id)arg0
+{
+	%orig;
+	typeTab13();
 }
 
 %end
