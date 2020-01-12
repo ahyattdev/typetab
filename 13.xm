@@ -174,6 +174,13 @@ void typeTabAssumeBlank13()
   %orig;
   typeTabAssumeBlank13();
 }
+
+- (void)newTab
+{
+	%orig;
+	typeTab13();
+}
+
 %end
 
 %hook TiltedTabView

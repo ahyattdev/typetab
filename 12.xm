@@ -139,6 +139,12 @@ void typeTab()
   typeTab();
 }
 
+- (void)newTab
+{
+	%orig;
+	typeTab();
+}
+
 %end
 
 %end
