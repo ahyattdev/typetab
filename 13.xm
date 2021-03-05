@@ -21,7 +21,7 @@
 @interface TabDocument
 
 // Returns if the document is blank or not
-- (BOOL)isBlankDocument;
+- (BOOL)isBlank;
 
 @end
 
@@ -91,7 +91,7 @@ void typeTab13()
 	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
 	TabController *tc = [bc tabController];
 	TabDocument *activeTabDocument = [tc activeTabDocument];
-	if (tc != nil && [activeTabDocument isBlankDocument])
+	if (tc != nil && [activeTabDocument isBlank])
 	{
 		NSLog(@"Tapping bar!");
 		[bc navigationBarURLWasTapped:nil];
@@ -135,7 +135,7 @@ void typeTabAssumeBlank13()
 - (void)tabController:(TabController *)tc didSwitchFromTabDocument:(TabDocument *)oldTab toTabDocument:(TabDocument *)newTab
 {
 	%orig;
-	if ([newTab isBlankDocument])
+	if ([newTab isBlank])
 	{
 		typeTabAssumeBlank13();
 	}
@@ -144,12 +144,12 @@ void typeTabAssumeBlank13()
 - (void)tabDocumentCommitPreviewedDocument:(TabDocument *)tabDoc
 {
 	%orig;
-	if ([tabDoc isBlankDocument])
+	if ([tabDoc isBlank])
 	{
 		typeTabAssumeBlank13();
 	}
 }
-	
+
 // TODO: this class handles command+n
 
 %end
@@ -212,7 +212,7 @@ void typeTabAssumeBlank13()
 %end
 
 %ctor {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 13.0) {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 13.0 && [[[UIDevice currentDevice] systemVersion] floatValue] < 14.0) {
             %init(13);
         }
 }
