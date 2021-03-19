@@ -8,14 +8,11 @@
 @interface BrowserController
 
 // Brings up the keyboard, use of arg1 us unknown
-- (void)navigationBarURLWasTapped:(id)arg1;
+- (void)navigationBarURLWasTapped:(id)arg1 completionHandler:(id)arg2;
 //Determins of the tab view is currently showing
 - (BOOL)isShowingTabView;
 // Returns the current TabController
 - (TabController *)tabController;
-// Called on iPad?
-- (void)addTabFromButtonBar;
-
 @end
 
 @interface TabDocument
@@ -69,9 +66,9 @@
 @interface BookmarkFavoritesViewController: UIViewController
 @end
 
-%group 13
+%group 14
 
-bool tabViewShowing13()
+bool tabViewShowing14()
 {
 	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
 	if (bc == nil)
@@ -86,22 +83,25 @@ bool tabViewShowing13()
 	return [tc tabCollectionView] != nil;
 }
 
-void typeTab13()
+void typeTab14()
 {
 	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
 	TabController *tc = [bc tabController];
 	TabDocument *activeTabDocument = [tc activeTabDocument];
-	if (tc != nil && [activeTabDocument isBlank])
+	if(activeTabDocument == nil){
+		return;
+	}
+	if (tc != nil && MSHookIvar<BOOL>(activeTabDocument, "_isBlank"))//*
 	{
 		NSLog(@"Tapping bar!");
-		[bc navigationBarURLWasTapped:nil];
+		[bc navigationBarURLWasTapped:nil completionHandler:nil];
 	}
 }
 
-void typeTabAssumeBlank13()
+void typeTabAssumeBlank14()
 {
 	BrowserController *bc = [(Application *)[UIApplication sharedApplication] primaryBrowserController];
-	[bc navigationBarURLWasTapped:nil];
+	[bc navigationBarURLWasTapped:nil completionHandler:nil];
 }
 
 %hook BrowserRootViewController
@@ -109,9 +109,9 @@ void typeTabAssumeBlank13()
 - (void)viewDidAppear:(BOOL)animated
 {
 	%orig;
-	if (!tabViewShowing13())
+	if (!tabViewShowing14())
 	{
-		typeTab13();
+		typeTab14();
 	}
 }
 
@@ -122,9 +122,9 @@ void typeTabAssumeBlank13()
 - (void)viewDidAppear:(BOOL)animated
 {
 	%orig;
-	if (!tabViewShowing13())
+	if (!tabViewShowing14())
 	{
-		typeTab13();
+		typeTab14();
 	}
 }
 
@@ -137,7 +137,7 @@ void typeTabAssumeBlank13()
 	%orig;
 	if ([newTab isBlank])
 	{
-		typeTabAssumeBlank13();
+		typeTabAssumeBlank14();
 	}
 }
 
@@ -146,7 +146,7 @@ void typeTabAssumeBlank13()
 	%orig;
 	if ([tabDoc isBlank])
 	{
-		typeTabAssumeBlank13();
+		typeTabAssumeBlank14();
 	}
 }
 
@@ -160,25 +160,25 @@ void typeTabAssumeBlank13()
 - (void)_newTabFromTabViewButton
 {
   %orig;
-  typeTabAssumeBlank13();
+  typeTabAssumeBlank14();
 }
 
 - (void)_addNewActiveTabOverviewTab
 {
   %orig;
-  typeTabAssumeBlank13();
+  typeTabAssumeBlank14();
 }
 
 - (void)_addNewActiveTiltedTabViewTab
 {
   %orig;
-  typeTabAssumeBlank13();
+  typeTabAssumeBlank14();
 }
 
 - (void)newTab
 {
 	%orig;
-	typeTab13();
+	typeTab14();
 }
 
 %end
@@ -188,7 +188,7 @@ void typeTabAssumeBlank13()
 - (void)activateItem:(id)arg0
 {
 	%orig;
-	typeTab13();
+	typeTab14();
 }
 
 %end
@@ -198,13 +198,13 @@ void typeTabAssumeBlank13()
 - (void)activateItem:(id)arg0
 {
 	%orig;
-	typeTab13();
+	typeTab14();
 }
 
 - (void)_activateItemToActivate
 {
 	%orig;
-	typeTab13();
+	typeTab14();
 }
 
 %end
@@ -212,7 +212,7 @@ void typeTabAssumeBlank13()
 %end
 
 %ctor {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 13.0 && [[[UIDevice currentDevice] systemVersion] floatValue] < 14.0) {
-            %init(13);
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 14.0) {
+            %init(14);
         }
 }
